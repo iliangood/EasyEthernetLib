@@ -2,6 +2,10 @@
 
 #include "utils.h"
 
+#include <SPI.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
+
 #if USE_DHCP
   DataTransmitter::DataTransmitter(const byte* mac, unsigned int port, const char* magicString) 
     : targetIP(255, 255, 255, 255), lockTargetIP(false)

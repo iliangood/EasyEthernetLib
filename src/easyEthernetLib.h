@@ -3,6 +3,10 @@
 
 #include "utils.h"
 
+#include <SPI.h>
+#include <Ethernet.h>
+#include <EthernetUdp.h>
+
 class DataTransmitter {
 private:
   uint8_t mac[6];
