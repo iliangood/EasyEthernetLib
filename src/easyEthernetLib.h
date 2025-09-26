@@ -7,6 +7,10 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
+#if not defined USE_DHCP
+#define USE_DHCP false
+#endif
+
 class DataTransmitter {
 private:
   uint8_t mac[6];
