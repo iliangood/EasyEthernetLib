@@ -1,4 +1,4 @@
-#if not defined EASY_ETHERNET_LIB
+#if !defined EASY_ETHERNET_LIB
 #define EASY_ETHERNET_LIB
 
 #include "utils.h"
@@ -7,7 +7,7 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#if not defined USE_DHCP
+#if !defined USE_DHCP
 #define USE_DHCP false
 #endif
 
@@ -20,7 +20,7 @@ private:
   const char* magicString;
   size_t magicStringLength;
   unsigned int port;
-#if not USE_DHCP
+#if !USE_DHCP
   IPAddress ip;
 #endif
 public:
@@ -44,7 +44,7 @@ public:
 
   IPAddress getTargetIP();
 
-#if not USE_DHCP
+#if !USE_DHCP
   void maintain(); //Обновление DHCP
 #endif
 };

@@ -1,4 +1,4 @@
-#if not defined UTILS_H
+#if !defined UTILS_H
 #define UTILS_H
 
 #define DEBUG_LEVEL_NOTHING 0
@@ -7,7 +7,7 @@
 #define DEBUG_LEVEL_INFO 3
 #define DEBUG_LEVEL_VERBOSE 4
 
-#if not defined DEBUG_LEVEL
+#if !defined DEBUG_LEVEL
 #define DEBUG_LEVEL DEBUG_LEVEL_ERRORS
 #endif
 
