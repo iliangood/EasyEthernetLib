@@ -125,6 +125,7 @@
       LOG_VERBOSE("Некоректный размер пакета или его отсутствие");
       return 0;
     }
+    LOG_VERBOSE("IP отправителя:", Udp.remoteIP());
     if(Udp.remoteIP() == Ethernet.localIP())
     {
       LOG_INFO("Получен свой же пакет - игнорирование пакета");
