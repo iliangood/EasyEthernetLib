@@ -157,7 +157,7 @@
     return targetIP;
   }
 
-  IPAddress DataTransmitter::getTargetIP()
+  IPAddress DataTransmitter::getIP()
   {
     return Udp.localIP();
   }
