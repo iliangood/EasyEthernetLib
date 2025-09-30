@@ -156,6 +156,12 @@
   {
     return targetIP;
   }
+
+  IPAddress DataTransmitter::getTargetIP()
+  {
+    return Udp.localIP();
+  }
+
 #if not USE_DHCP
   void DataTransmitter::maintain() //Обновление DHCP
   {

@@ -40,6 +40,8 @@ public:
 
   IPAddress getTargetIP();
 
+  IPAddress getIP();
+
 #if not USE_DHCP
   void maintain(); //Обновление DHCP
 #endif
