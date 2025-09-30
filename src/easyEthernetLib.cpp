@@ -163,6 +163,7 @@
   }
 
 #if not USE_DHCP
+#if !USE_DHCP
   void DataTransmitter::maintain() //Обновление DHCP
   {
     LOG_INFO("Обновление DHCP");

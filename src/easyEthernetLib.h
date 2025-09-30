@@ -1,4 +1,4 @@
-#if not defined EASY_ETHERNET_LIB
+#if !defined EASY_ETHERNET_LIB
 #define EASY_ETHERNET_LIB
 
 #include "utils.h"
@@ -6,6 +6,10 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <EthernetUdp.h>
+
+#if !defined USE_DHCP
+#define USE_DHCP false
+#endif
 
 class DataTransmitter {
 private:
@@ -16,7 +20,7 @@ private:
   const char* magicString;
   size_t magicStringLength;
   unsigned int port;
-#if not USE_DHCP
+#if !USE_DHCP
   IPAddress ip;
 #endif
 public:
@@ -43,6 +47,7 @@ public:
   IPAddress getIP();
 
 #if not USE_DHCP
+#if !USE_DHCP
   void maintain(); //Обновление DHCP
 #endif
 };
