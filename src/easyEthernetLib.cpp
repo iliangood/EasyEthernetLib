@@ -162,7 +162,6 @@
     return Ethernet.localIP();
   }
 
-#if not USE_DHCP
 #if !USE_DHCP
   void DataTransmitter::maintain() //Обновление DHCP
   {
