@@ -29,7 +29,7 @@
     LOG_INFO("Создан класс DataTransmitter");
   }
 #else
-  DataTransmitter::DataTransmitter(const byte* mac, unsigned int port, IPAddress ip, const char* magicString) 
+  DataTransmitter::DataTransmitter(const byte* mac, IPAddress ip, unsigned int port, const char* magicString) 
     : targetIP(255, 255, 255, 255), ip(ip), lockTargetIP(false)
     {
     this->port = port;
