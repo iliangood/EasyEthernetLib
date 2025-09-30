@@ -46,7 +46,6 @@ public:
 
   IPAddress getIP();
 
-#if not USE_DHCP
 #if !USE_DHCP
   void maintain(); //Обновление DHCP
 #endif
