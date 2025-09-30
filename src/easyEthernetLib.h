@@ -27,7 +27,7 @@ public:
 #if USE_DHCP
   DataTransmitter(const byte* mac, unsigned int port, const char* magicString);
 #else
-  DataTransmitter(const byte* mac, unsigned int port, IPAddress ip, const char* magicString);
+  DataTransmitter(const byte* mac, IPAddress ip, unsigned int port, const char* magicString);
 #endif
   void setLockTargetIP(bool lock);
   void setTargetIP(IPAddress targetIP, bool lockTargetIP = true);
