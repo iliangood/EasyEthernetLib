@@ -11,8 +11,6 @@
 #define DEBUG_LEVEL DEBUG_LEVEL_ERRORS
 #endif
 
-#define DEBUG_LEVEL DEBUG_LEVEL_VERBOSE
-
 #define LOG_ERROR(...) do { \
     if (DEBUG_LEVEL >= DEBUG_LEVEL_ERRORS) { \
         Serial.print("[ERROR] "); \
