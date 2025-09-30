@@ -159,7 +159,7 @@
 
   IPAddress DataTransmitter::getIP()
   {
-    return Udp.localIP();
+    return Ethernet.localIP();
   }
 
 #if not USE_DHCP
