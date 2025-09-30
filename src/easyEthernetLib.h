@@ -7,9 +7,6 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#if !defined USE_DHCP
-#define USE_DHCP false
-#endif
 
 class DataTransmitter {
 private:
@@ -20,21 +17,19 @@ private:
   const char* magicString;
   size_t magicStringLength;
   unsigned int port;
-#if !USE_DHCP
-  IPAddress ip;
-#endif
+
+  bool useDHCP;
 public:
-#if USE_DHCP
   DataTransmitter(const byte* mac, unsigned int port, const char* magicString);
-#else
-  DataTransmitter(const byte* mac, IPAddress ip, unsigned int port, const char* magicString);
-#endif
+
   void setLockTargetIP(bool lock);
   void setTargetIP(IPAddress targetIP, bool lockTargetIP = true);
 
   bool isValid();
 
   int init();
+
+  int init(IPAddress ip);
 
   int sendData(const byte* data, int dataSize);
 
@@ -46,9 +41,7 @@ public:
 
   IPAddress getIP();
 
-#if !USE_DHCP
-  void maintain(); //Обновление DHCP
-#endif
+  int maintain(); //Обновление DHCP
 };
 
 #endif

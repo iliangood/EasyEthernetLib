@@ -6,7 +6,6 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-#if USE_DHCP
   DataTransmitter::DataTransmitter(const byte* mac, unsigned int port, const char* magicString) 
     : targetIP(255, 255, 255, 255), lockTargetIP(false)
     {
@@ -28,29 +27,7 @@
     }
     LOG_INFO("Создан класс DataTransmitter");
   }
-#else
-  DataTransmitter::DataTransmitter(const byte* mac, IPAddress ip, unsigned int port, const char* magicString) 
-    : targetIP(255, 255, 255, 255), ip(ip), lockTargetIP(false)
-    {
-    this->port = port;
-    this->magicString = magicString;
-    if(magicString != nullptr)
-      magicStringLength = strlen(magicString);
-    else
-      magicStringLength = 0;
-    if(mac != nullptr)
-    {
-      for (char i = 0; i < 6; ++i) 
-        this->mac[i] = mac[i];
-    }
-    else
-    {
-      for (char i = 0; i < 6; ++i) 
-        this->mac[i] = 0;
-    }
-    LOG_INFO("Создан класс DataTransmitter");
-  }
-#endif
+
   void DataTransmitter::setLockTargetIP(bool lock)
   {
     lockTargetIP = lock;
@@ -75,21 +52,36 @@
 
   int DataTransmitter::init()
   {
+    useDHCP = true;
     if(!isValid())
       return 1;
     SPI.begin();
 #if defined SPI_CLOCK_DIV2
     SPI.setClockDivider(SPI_CLOCK_DIV2);
 #endif
-#if USE_DHCP
     if (Ethernet.begin(mac) == 0)
     {
       LOG_ERROR("Ошибка DHCP");
       return 1;
     }
-#else
-    Ethernet.begin(mac, ip);
+    if (!Udp.begin(port))
+    {
+      LOG_ERROR("Ошибка открытия UDP-порта");
+      return 1;
+    }
+    return 0;
+  }
+
+  int DataTransmitter::init(IPAddress ip)
+  {
+    useDHCP = false;
+    if(!isValid())
+      return 1;
+    SPI.begin();
+#if defined SPI_CLOCK_DIV2
+    SPI.setClockDivider(SPI_CLOCK_DIV2);
 #endif
+    Ethernet.begin(mac, ip);
     if (!Udp.begin(port))
     {
       LOG_ERROR("Ошибка открытия UDP-порта");
@@ -164,10 +156,33 @@
     return Ethernet.localIP();
   }
 
-#if !USE_DHCP
-  void DataTransmitter::maintain() //Обновление DHCP
+
+  int DataTransmitter::maintain() //Обновление DHCP
   {
+    if(useDHCP)
+    {
+      LOG_ERROR("Использована функция для работы с DHCP с иницализацией без DHCP");
+      return 1;
+    }
     LOG_INFO("Обновление DHCP");
-    Ethernet.maintain();
+    int rc = Ethernet.maintain();
+    switch (rc) {
+    case DHCP_CHECK_NONE:
+      LOG_INFO("DHCP: Ничего не произошло");
+      break;
+    case DHCP_CHECK_RENEW_FAIL:
+      LOG_ERROR("DHCP: Не удалось продлить аренду");
+      return 1;
+    case DHCP_CHECK_RENEW_OK:
+      LOG_INFO("DHCP: Аренда успешно продлена");
+      break;
+    case DHCP_CHECK_REBIND_FAIL:
+      LOG_ERROR("DHCP: Не удалось выполнить повторную привязку");
+      return 1;
+    case DHCP_CHECK_REBIND_OK:
+      LOG_INFO("DHCP: Повторная привязка успешна");
+      break;
   }
-#endif
+    return 0;
+  }
+
