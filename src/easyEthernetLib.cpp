@@ -167,19 +167,19 @@
     LOG_INFO("Обновление DHCP");
     int rc = Ethernet.maintain();
     switch (rc) {
-    case DHCP_CHECK_NONE:
+    case 0:
       LOG_INFO("DHCP: Ничего не произошло");
       break;
-    case DHCP_CHECK_RENEW_FAIL:
+    case 1:
       LOG_ERROR("DHCP: Не удалось продлить аренду");
       return 1;
-    case DHCP_CHECK_RENEW_OK:
+    case 2:
       LOG_INFO("DHCP: Аренда успешно продлена");
       break;
-    case DHCP_CHECK_REBIND_FAIL:
+    case 3:
       LOG_ERROR("DHCP: Не удалось выполнить повторную привязку");
       return 1;
-    case DHCP_CHECK_REBIND_OK:
+    case 4:
       LOG_INFO("DHCP: Повторная привязка успешна");
       break;
   }
