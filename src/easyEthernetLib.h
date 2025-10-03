@@ -2,6 +2,7 @@
 #define EASY_ETHERNET_LIB
 
 #include "utils.h"
+#include <message.h>
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -34,6 +35,8 @@ public:
   int sendData(const byte* data, int dataSize);
 
   int sendData(const char* data);
+
+  int sendData(const message& data)
 
   size_t receiveData(byte* buffer, int maxSize);
 
