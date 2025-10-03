@@ -7,7 +7,7 @@ class message
 	uint8_t array[N];
 	size_t Size;
 public:
-	message() : pointer(0)
+	message() : Size(0)
 	{}
 	size_t getSize() const
 	{
@@ -23,11 +23,11 @@ public:
 	}
 	uint8_t* getData()
 	{
-		return Data;
+		return array;
 	}
 	size_t push(const uint8_t* data, size_t size)
 	{
-		if(sizeof(T) > getSpace())
+		if(size > getSpace())
 		{
 			return getSpace();
 		}
@@ -39,9 +39,9 @@ public:
 		return getSpace();
 	}
 
-	size_t push(const char*)
+	size_t push(const char* data)
 	{
-		return push(data, strlen(data));
+		return push((const uint8_t*)data, strlen(data));
 	}
 
 	template <typename T>

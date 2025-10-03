@@ -107,9 +107,7 @@
   }
 
   int DataTransmitter::sendData(message data)
-  {
-    return sendData(data.getData(), getSize());
-  }
+  
 
   size_t DataTransmitter::receiveData(byte* buffer, int maxSize)
   {
@@ -151,11 +149,7 @@
     return packetSize - magicStringLength;
   }
 
-  void DataTransmitter::receiveData(message* buffer)
-  {
-    receiveData(buffer->getData(), buffer->getCapacity());
-    return;
-  }
+  
 
   IPAddress DataTransmitter::getTargetIP()
   {

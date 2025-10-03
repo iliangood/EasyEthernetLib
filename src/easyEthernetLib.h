@@ -36,11 +36,20 @@ public:
 
   int sendData(const char* data);
 
-  int sendData(const message& data)
+  template <size_t N>
+  int sendData(const message<N>& data)
+  {
+    return sendData(data.getData(), data.getSize());
+  }
 
   size_t receiveData(byte* buffer, int maxSize);
 
-  void receiveData(message* buffer);
+  template <size_t N>
+  void receiveData(message<N>* buffer)
+  {
+    receiveData(buffer->getData(), buffer->getCapacity());
+    return;
+  }
 
   IPAddress getTargetIP();
 
