@@ -151,6 +151,12 @@
     return packetSize - magicStringLength;
   }
 
+  void DataTransmitter::receiveData(message* buffer)
+  {
+    receiveData(buffer->getData(), buffer->getCapacity());
+    return;
+  }
+
   IPAddress DataTransmitter::getTargetIP()
   {
     return targetIP;

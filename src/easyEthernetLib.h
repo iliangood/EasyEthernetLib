@@ -40,6 +40,8 @@ public:
 
   size_t receiveData(byte* buffer, int maxSize);
 
+  void receiveData(message* buffer);
+
   IPAddress getTargetIP();
 
   IPAddress getIP();
