@@ -9,15 +9,15 @@ class message
 public:
 	message() : pointer(0)
 	{}
-	size_t getSize()
+	size_t getSize() const
 	{
 		return Size;
 	}
-	size_t getCapacity()
+	size_t getCapacity() const
 	{
 		return N;
 	}
-	size_t getSpace()
+	size_t getSpace() const
 	{
 		return N - Size;
 	}
@@ -25,7 +25,7 @@ public:
 	{
 		return Data;
 	}
-	size_t push(uint8_t* data, size_t size)
+	size_t push(const uint8_t* data, size_t size)
 	{
 		if(sizeof(T) > getSpace())
 		{
@@ -38,6 +38,12 @@ public:
 		}
 		return getSpace();
 	}
+
+	size_t push(const char*)
+	{
+		return push(data, strlen(data));
+	}
+
 	template <typename T>
 	size_t push(T& data) //Возвращает оставшееся место
 	{
