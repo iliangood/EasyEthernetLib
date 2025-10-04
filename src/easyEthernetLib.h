@@ -1,8 +1,6 @@
 #if !defined EASY_ETHERNET_LIB
 #define EASY_ETHERNET_LIB
 
-#include <Arduino.h>
-
 #include "utils.h"
 #include "message.h"
 

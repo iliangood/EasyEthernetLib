@@ -54,6 +54,11 @@ public:
 		(T*)(array + Size) = data;
 		return getSpace();
 	}
+
+	void clear()
+	{
+		Size = 0;
+	}
 };
 
 #endif
