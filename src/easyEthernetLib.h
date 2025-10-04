@@ -28,7 +28,7 @@ public:
 
   bool isValid();
 
-  int init();
+  //int init();
 
   int init(IPAddress ip);
 

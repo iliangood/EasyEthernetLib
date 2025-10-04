@@ -50,7 +50,7 @@
 	return true;
   }
 
-  int DataTransmitter::init()
+  /*int DataTransmitter::init()
   {
 	useDHCP = true;
 	if(!isValid())
@@ -70,7 +70,7 @@
 	  return 1;
 	}
 	return 0;
-  }
+  }*/
 
   int DataTransmitter::init(IPAddress ip)
   {
