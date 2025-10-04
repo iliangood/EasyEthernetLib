@@ -1,9 +1,10 @@
 #if !defined EASY_ETHERNET_LIB
 #define EASY_ETHERNET_LIB
 
-#include <cstdint>
+#include <Arduino.h>
+
 #include "utils.h"
-#include <message.h>
+#include "message.h"
 
 #include <SPI.h>
 #include <Ethernet.h>

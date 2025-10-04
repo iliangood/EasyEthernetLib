@@ -105,10 +105,7 @@
   {
     return sendData((const byte*)data, strlen(data)+1);
   }
-
-  int DataTransmitter::sendData(message data)
   
-
   size_t DataTransmitter::receiveData(byte* buffer, int maxSize)
   {
     LOG_VERBOSE("Попытка получения пакета");
