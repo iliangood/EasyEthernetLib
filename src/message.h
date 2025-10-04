@@ -41,7 +41,7 @@ public:
 
 	size_t push(const char* data)
 	{
-		return push((const uint8_t*)data, strlen(data));
+		return push((const uint8_t*)data, strlen(data) + 1);
 	}
 
 	template <typename T>

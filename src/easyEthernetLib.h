@@ -1,6 +1,7 @@
 #if !defined EASY_ETHERNET_LIB
 #define EASY_ETHERNET_LIB
 
+#include <cstdint>
 #include "utils.h"
 #include <message.h>
 
