@@ -6,8 +6,9 @@ class message
 {
 	uint8_t array[N];
 	size_t Size;
+	size_t readPtr;
 public:
-	message() : Size(0)
+	message() : Size(0), readPtr(0) 
 	{}
 
 	size_t getSize() const
@@ -62,8 +63,9 @@ public:
 	}
 
 	template <typename T>
-	size_t push(T& data) //Возвращает оставшееся место
+	size_t push(const T& data) //Возвращает оставшееся место
 	{
+		static_assert(IS_TRIVIALLY_COPYABLE(T), "T must be trivially copyable (POD-like) for memcpy safety.");
 		if(sizeof(T) > getSpace())
 		{
 			return getSpace();
@@ -73,9 +75,75 @@ public:
 		return getSpace();
 	}
 
+	size_t pop(uint8_t* data, size_t size)
+	{
+		if(size > Size)
+		{
+			return Size;
+		}
+		memcpy(data, array, size);
+		memmove(array, array + size, Size - size);
+		Size -= size;
+		return Size;
+	}
+
+	template <typename T>
+	T pop() //Возвращает оставшийся размер
+	{
+		static_assert(IS_TRIVIALLY_COPYABLE(T), "T must be trivially copyable (POD-like) for memcpy safety.");
+		T data;
+		if(sizeof(T) > Size)
+		{
+			memset(&data, 0, sizeof(T));
+			return data;
+		}
+		pop((uint8_t*)&data, sizeof(T));
+		return data;
+	}
+
 	void clear()
 	{
 		Size = 0;
+	}
+
+	size_t getReadPtr() const
+	{
+		return readPtr;
+	}
+
+	void setReadPtr(size_t ptr)
+	{
+		if(ptr > Size)
+			readPtr = Size;
+		else
+			readPtr = ptr;
+	}
+
+	template <typename T>
+	T read()
+	{
+		static_assert(IS_TRIVIALLY_COPYABLE(T), "T must be trivially copyable (POD-like) for memcpy safety.");
+		T data;
+		if(readPtr + sizeof(T) > Size)
+		{
+			memset(&data, 0, sizeof(T));
+			return data;
+		}
+		memcpy(&data, array + readPtr, sizeof(T));
+		readPtr += sizeof(T);
+		return data;
+	}
+	
+	char* readString()
+	{
+		if(readPtr >= Size)
+			return nullptr;
+		char* start = (char*)(array + readPtr);
+		size_t len = strnlen(start, Size - readPtr);
+		if(readPtr + len >= Size) //Нет завершающего нуля
+			return nullptr;
+		readPtr += len + 1;
+		return start;
 	}
 };
 

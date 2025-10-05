@@ -1,6 +1,6 @@
 ## EasyEthernetLib
 
-Простая библиотека для обмена данными по Ethernet/UDP с Arduino (на базе Ethernet и EthernetUdp).
+Простая библиотека для обмена данными по Ethernet/UDP с Arduino (на базе Ethernet и EthernetUdp). Протестирована на W5500.
 
 Особенности:
 - Отправка/приём сырых байтов и C-строк
