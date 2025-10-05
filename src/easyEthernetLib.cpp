@@ -129,6 +129,12 @@
 	  Udp.flush();
 	  return 0;
 	}
+	if(lockTargetIP && targetIP != IPAddress(255, 255, 255, 255) && targetIP != Udp.remoteIP())
+	{
+	  DEBUG_WARNING("Пакет проигнорирован, из-за того, что пришел не с того IP");
+	  Udp.flush();
+	  return 0;
+	}
 	if(packetSize > maxSize)
 	{
 	  DEBUG_WARNING("Пакет проигнорирован, из-за того, что слишком большой");
@@ -143,9 +149,10 @@
 	  return 0;
 	}
 	if(targetIP != Udp.remoteIP() && !lockTargetIP)
-	  DEBUG_INFO("IP аддресс удаленного устройства обновлен");
-	if(!lockTargetIP)
-	  targetIP = Udp.remoteIP();
+	{
+		DEBUG_INFO("IP аддресс удаленного устройства обновлен");
+		targetIP = Udp.remoteIP();
+	}
 	memmove(buffer, &buffer[magicStringLength], packetSize - magicStringLength);
 	DEBUG_INFO("Пакет получен");
 	Udp.flush();

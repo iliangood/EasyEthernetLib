@@ -51,11 +51,8 @@ public:
 		{
 			return getSpace();
 		}
-		for(size_t i = 0; i < size; ++i)
-		{
-			array[Size] = data[i];
-			++Size;
-		}
+		memcpy(getEnd(), data, size);
+		Size += size;
 		return getSpace();
 	}
 
