@@ -40,7 +40,7 @@
 
   bool DataTransmitter::isValid()
   {
-	if(magicString == nullptr)
+	if(magicStringLength > 0 && magicString == nullptr)
 	  return false;
 	bool res = false;
 	for(char i = 0; i < 6; ++i)
@@ -100,10 +100,14 @@
 	if(data == nullptr)
 	  return 1;
 	Udp.beginPacket(targetIP, port);
-	Udp.write(magicString, magicStringLength);
+	if(magicStringLength > 0)
+		Udp.write(magicString, magicStringLength);
 	Udp.write(data, dataSize);
 	Udp.endPacket();
-	DEBUG_INFO("Пакет отправлен");
+	if(magicStringLength > 0)
+	  DEBUG_DEBUG("Пакет отправлен с магической строкой");
+	else
+	  DEBUG_DEBUG("Пакет отправлен без магической строки");
 	return 0;
   }
   int DataTransmitter::sendData(const char* data)
@@ -119,13 +123,13 @@
 	int packetSize = Udp.parsePacket();
 	if ((packetSize < 1) || packetSize < magicStringLength)
 	{
-	  DEBUG_VERBOSE("Некоректный размер пакета или его отсутствие");
+	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
 	  return 0;
 	}
 	DEBUG_VERBOSE("IP отправителя:%d.%d.%d.%d", Udp.remoteIP()[0], Udp.remoteIP()[1], Udp.remoteIP()[2], Udp.remoteIP()[3]);
 	if(Udp.remoteIP() == Ethernet.localIP())
 	{
-	  DEBUG_INFO("Получен свой же пакет - игнорирование пакета");
+	  DEBUG_DEBUG("Получен свой же пакет - игнорирование пакета");
 	  Udp.flush();
 	  return 0;
 	}
@@ -142,12 +146,15 @@
 	  return 0;
 	}
 	Udp.read(buffer, packetSize);
-	if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
-	{
-	  DEBUG_WARNING("В пакете нет магической строки");
-	  Udp.flush();
-	  return 0;
-	}
+	if(magicStringLength > 0)
+		if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
+		{
+		DEBUG_WARNING("В пакете нет магической строки");
+		Udp.flush();
+		return 0;
+		}
+	else
+		DEBUG_DEBUG("Пакет получен без магической строки");
 	if(targetIP != Udp.remoteIP() && !lockTargetIP)
 	{
 		DEBUG_INFO("IP аддресс удаленного устройства обновлен");
@@ -183,7 +190,7 @@
 	int rc = Ethernet.maintain();
 	switch (rc) {
 	case 0:
-	  DEBUG_INFO("DHCP: Ничего не произошло");
+	  DEBUG_VERBOSE("DHCP: Ничего не произошло");
 	  break;
 	case 1:
 	  DEBUG_ERROR("DHCP: Не удалось продлить аренду");
