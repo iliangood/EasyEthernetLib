@@ -47,7 +47,7 @@ public:
   template <size_t N>
   void receiveData(message<N>* buffer)
   {
-    receiveData(buffer->getData(), buffer->getCapacity());
+    buffer->addSize( receiveData(buffer->getEnd(), buffer->getSpace()));
     return;
   }
 

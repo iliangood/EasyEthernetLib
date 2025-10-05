@@ -9,22 +9,42 @@ class message
 public:
 	message() : Size(0)
 	{}
+
 	size_t getSize() const
 	{
 		return Size;
 	}
+
 	size_t getCapacity() const
 	{
 		return N;
 	}
+
 	size_t getSpace() const
 	{
 		return N - Size;
 	}
+
 	uint8_t* getData()
 	{
 		return array;
 	}
+
+	const uint8_t* getData() const
+	{
+		return array;
+	}
+
+	uint8_t* getEnd()
+	{
+		return array + Size;
+	}
+
+	void addSize(size_t size)
+	{
+		Size = (Size + size > N) ? N : Size + size;
+	}
+	
 	size_t push(const uint8_t* data, size_t size)
 	{
 		if(size > getSpace())
@@ -51,7 +71,8 @@ public:
 		{
 			return getSpace();
 		}
-		(T*)(array + Size) = data;
+		memcpy(getEnd(), &data, sizeof(T));
+		Size += sizeof(T);
 		return getSpace();
 	}
 

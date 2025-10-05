@@ -47,6 +47,8 @@
 	  res = res || mac[i];
 	if(!res)
 	  return false;
+	if(port == 0)
+	  return false;
 	return true;
   }
 
@@ -76,7 +78,10 @@
   {
 	useDHCP = false;
 	if(!isValid())
-	  return 1;
+	{
+		DEBUG_ERROR("Ошибка инициализации - невалидные параметры");
+		return 1;
+	}
 	SPI.begin();
 #if defined SPI_CLOCK_DIV2
 	SPI.setClockDivider(SPI_CLOCK_DIV2);
@@ -121,17 +126,20 @@
 	if(Udp.remoteIP() == Ethernet.localIP())
 	{
 	  DEBUG_INFO("Получен свой же пакет - игнорирование пакета");
+	  Udp.flush();
 	  return 0;
 	}
 	if(packetSize > maxSize)
 	{
 	  DEBUG_WARNING("Пакет проигнорирован, из-за того, что слишком большой");
+	  Udp.flush();
 	  return 0;
 	}
 	Udp.read(buffer, packetSize);
 	if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
 	{
 	  DEBUG_WARNING("В пакете нет магической строки");
+	  Udp.flush();
 	  return 0;
 	}
 	if(targetIP != Udp.remoteIP() && !lockTargetIP)
@@ -140,6 +148,7 @@
 	  targetIP = Udp.remoteIP();
 	memmove(buffer, &buffer[magicStringLength], packetSize - magicStringLength);
 	DEBUG_INFO("Пакет получен");
+	Udp.flush();
 	return packetSize - magicStringLength;
   }
 
@@ -158,7 +167,7 @@
 
   int DataTransmitter::maintain() //Обновление DHCP
   {
-	if(useDHCP)
+	if(!useDHCP)
 	{
 	  DEBUG_ERROR("Использована функция для работы с DHCP с иницализацией без DHCP");
 	  return 1;
