@@ -32,7 +32,7 @@ void setup() {
   
   // инициализация через статический IP
   IPAddress ip(192, 168, 1, 178);  // IP отличается от отправителя
-  if (transmitter.init(ip) != 0)
+  if (dt.init(ip) != 0)
   {
     DEBUG_ERROR("Init failed");
     while(1);

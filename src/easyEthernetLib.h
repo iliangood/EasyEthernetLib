@@ -9,6 +9,12 @@
 #include <EthernetUdp.h>
 
 
+struct receiveInfo
+{
+	size_t dataSize;
+  IPAddress remoteIP;
+};
+
 class DataTransmitter {
 private:
   uint8_t mac[6];
@@ -50,13 +56,14 @@ public:
     return sendData(data.getData(), data.getSize());
   }
 
-  size_t receiveData(byte* buffer, int maxSize);
+  receiveInfo receiveData(byte* buffer, int maxSize);
 
   template <size_t N>
-  void receiveData(message<N>* buffer)
+  receiveInfo receiveData(message<N>* buffer)
   {
-    buffer->addSize( receiveData(buffer->getEnd(), buffer->getSpace()));
-    return;
+    receiveInfo rx = receiveData(buffer->getEnd(), buffer->getSpace());
+    buffer->addSize(rx.dataSize);
+    return rx;
   }
 
   IPAddress getTargetIP();

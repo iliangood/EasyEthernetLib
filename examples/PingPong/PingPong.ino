@@ -50,7 +50,7 @@ void setup() {
   
   // Инициализация со статическим IP
   IPAddress ip = IS_MASTER ? ipMaster : ipSlave;
-  if (transmitter.init(ip) != 0)
+  if (dt.init(ip) != 0)
   {
     DEBUG_ERROR("Init failed");
     while(1);

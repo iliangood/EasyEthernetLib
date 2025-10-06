@@ -115,43 +115,43 @@
 	return sendData((const byte*)data, strlen(data)+1);
   }
   
-  size_t DataTransmitter::receiveData(byte* buffer, int maxSize)
+  receiveInfo DataTransmitter::receiveData(byte* buffer, int maxSize)
   {
 	DEBUG_VERBOSE("Попытка получения пакета");
 	if(buffer == nullptr)
-	return 0;
+	return receiveInfo{0, IPAddress(0,0,0,0)};
 	int packetSize = Udp.parsePacket();
 	if ((packetSize < 1) || packetSize < magicStringLength)
 	{
 	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
-	  return 0;
+	  return receiveInfo{0, IPAddress(0,0,0,0)};
 	}
 	DEBUG_VERBOSE("IP отправителя:%d.%d.%d.%d", Udp.remoteIP()[0], Udp.remoteIP()[1], Udp.remoteIP()[2], Udp.remoteIP()[3]);
 	if(Udp.remoteIP() == Ethernet.localIP())
 	{
 	  DEBUG_DEBUG("Получен свой же пакет - игнорирование пакета");
 	  Udp.flush();
-	  return 0;
+	  return receiveInfo{0, Udp.remoteIP()};
 	}
 	if(lockTargetIP && targetIP != IPAddress(255, 255, 255, 255) && targetIP != Udp.remoteIP())
 	{
 	  DEBUG_WARNING("Пакет проигнорирован, из-за того, что пришел не с того IP");
 	  Udp.flush();
-	  return 0;
+	  return receiveInfo{0, Udp.remoteIP()};
 	}
 	if(packetSize > maxSize)
 	{
 	  DEBUG_WARNING("Пакет проигнорирован, из-за того, что слишком большой");
 	  Udp.flush();
-	  return 0;
+	  return receiveInfo{0, Udp.remoteIP()};
 	}
 	Udp.read(buffer, packetSize);
 	if(magicStringLength > 0)
 		if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
 		{
-		DEBUG_WARNING("В пакете нет магической строки");
+		DEBUG_WARNING("В пакете нет ожидаемой магической строки");
 		Udp.flush();
-		return 0;
+		return receiveInfo{0, Udp.remoteIP()};
 		}
 	else
 		DEBUG_DEBUG("Пакет получен без магической строки");
@@ -163,7 +163,7 @@
 	memmove(buffer, &buffer[magicStringLength], packetSize - magicStringLength);
 	DEBUG_INFO("Пакет получен");
 	Udp.flush();
-	return packetSize - magicStringLength;
+	return receiveInfo{(size_t)(packetSize - magicStringLength), Udp.remoteIP()};
   }
 
   
