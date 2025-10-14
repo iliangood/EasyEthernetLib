@@ -6,7 +6,7 @@
 #include <Ethernet.h>
 #include <EthernetUdp.h>
 
-  DataTransmitter::DataTransmitter(const byte* mac, unsigned int port, const char* magicString) 
+  DataTransmitter::DataTransmitter(const uint8_t* mac, unsigned int port, const char* magicString) 
 	: targetIP(255, 255, 255, 255), lockTargetIP(false)
 	{
 	this->port = port;
@@ -17,12 +17,12 @@
 	  magicStringLength = 0;
 	if(mac != nullptr)
 	{
-	  for (char i = 0; i < 6; ++i) 
+	  for (int i = 0; i < 6; ++i) 
 		this->mac[i] = mac[i];
 	}
 	else
 	{
-	  for (char i = 0; i < 6; ++i) 
+	  for (int i = 0; i < 6; ++i) 
 		this->mac[i] = 0;
 	}
 	DEBUG_VERBOSE("Создан класс DataTransmitter");
@@ -32,7 +32,7 @@
   {
 	lockTargetIP = lock;
   }
-  void DataTransmitter::setTargetIP(IPAddress targetIP, bool lockTargetIP = true)
+  void DataTransmitter::setTargetIP(IPAddress targetIP, bool lockTargetIP)
   {
 	this->targetIP = targetIP;
 	setLockTargetIP(lockTargetIP);
@@ -43,8 +43,8 @@
 	if(magicStringLength > 0 && magicString == nullptr)
 	  return false;
 	bool res = false;
-	for(char i = 0; i < 6; ++i)
-	  res = res || mac[i];
+	for(int i = 0; i < 6; ++i)
+	  res = res || mac[i] != 0;
 	if(!res)
 	  return false;
 	if(port == 0)
@@ -95,7 +95,7 @@
 	return 0;
   }
 
-  int DataTransmitter::sendData(const byte* data, int dataSize)
+  int DataTransmitter::sendData(const byte* data, size_t dataSize)
   {
 	if(data == nullptr)
 	  return 1;
@@ -115,12 +115,12 @@
 	return sendData((const byte*)data, strlen(data)+1);
   }
   
-  receiveInfo DataTransmitter::receiveData(byte* buffer, int maxSize)
+  receiveInfo DataTransmitter::receiveData(byte* buffer, size_t maxSize)
   {
 	DEBUG_VERBOSE("Попытка получения пакета");
 	if(buffer == nullptr)
 	return receiveInfo{0, IPAddress(0,0,0,0)};
-	int packetSize = Udp.parsePacket();
+	size_t packetSize = max(Udp.parsePacket(), 0);
 	if ((packetSize < 1) || packetSize < magicStringLength)
 	{
 	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
@@ -147,12 +147,14 @@
 	}
 	Udp.read(buffer, packetSize);
 	if(magicStringLength > 0)
+	{
 		if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
 		{
-		DEBUG_WARNING("В пакете нет ожидаемой магической строки");
-		Udp.flush();
-		return receiveInfo{0, Udp.remoteIP()};
+			DEBUG_WARNING("В пакете нет ожидаемой магической строки");
+			Udp.flush();
+			return receiveInfo{0, Udp.remoteIP()};
 		}
+	}
 	else
 		DEBUG_DEBUG("Пакет получен без магической строки");
 	if(targetIP != Udp.remoteIP() && !lockTargetIP)

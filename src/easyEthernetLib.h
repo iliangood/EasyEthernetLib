@@ -46,7 +46,7 @@ public:
 
   int init(IPAddress ip);
 
-  int sendData(const byte* data, int dataSize);
+  int sendData(const byte* data, size_t dataSize);
 
   int sendData(const char* data);
 
@@ -56,7 +56,7 @@ public:
     return sendData(data.getData(), data.getSize());
   }
 
-  receiveInfo receiveData(byte* buffer, int maxSize);
+  receiveInfo receiveData(byte* buffer, size_t maxSize);
 
   template <size_t N>
   receiveInfo receiveData(message<N>* buffer)
