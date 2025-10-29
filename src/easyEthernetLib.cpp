@@ -47,8 +47,6 @@
 	  res = res || mac[i] != 0;
 	if(!res)
 	  return false;
-	if(port == 0)
-	  return false;
 	return true;
   }
 
