@@ -40,7 +40,7 @@ public:
 	setTargetIP(IPAddress(255, 255, 255, 255), false);
   }
 
-  bool isValid();
+  bool isValid(); 
 
   //int init();
 
