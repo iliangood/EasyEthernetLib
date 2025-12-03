@@ -124,6 +124,7 @@
 	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
 	  return receiveInfo{0, IPAddress(0,0,0,0)};
 	}
+	
 	DEBUG_VERBOSE("IP отправителя:%d.%d.%d.%d", Udp.remoteIP()[0], Udp.remoteIP()[1], Udp.remoteIP()[2], Udp.remoteIP()[3]);
 	if(Udp.remoteIP() == Ethernet.localIP())
 	{
@@ -144,6 +145,18 @@
 	  return receiveInfo{0, Udp.remoteIP()};
 	}
 	Udp.read(buffer, packetSize);
+	/*for(size_t i = 0; i < packetSize; ++i)
+	{
+		Serial.print(buffer[i], HEX);
+		Serial.print(' ');
+	}
+	Serial.print('\n');
+	for(size_t i = 0; i < packetSize; ++i)
+	{
+		Serial.print(static_cast<char>(buffer[i]));
+		Serial.print(' ');
+	}*/
+	//Serial.print('\n');
 	if(magicStringLength > 0)
 	{
 		if (strncmp((char*)buffer, magicString, magicStringLength) != 0)
