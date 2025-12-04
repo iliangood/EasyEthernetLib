@@ -127,6 +127,7 @@ public:
 		if(readPtr + sizeof(T) > Size)
 		{
 			memset(&data, 0, sizeof(T));
+			DEBUG_WARNING("can't read data is too big");
 			return data;
 		}
 		memcpy(&data, array + readPtr, sizeof(T));
