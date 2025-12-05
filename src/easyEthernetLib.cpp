@@ -112,15 +112,20 @@
   {
 	return sendData((const byte*)data, strlen(data)+1);
   }
-  
-  receiveInfo DataTransmitter::receiveData(byte* buffer, size_t maxSize)
+
+  //#pragma GCC push_options
+  //#pragma GCC optimize ("O0")
+
+  receiveInfo __attribute__((used, noinline, optimize("O0"))) DataTransmitter::receiveData(byte* buffer, size_t maxSize)
   {
 	DEBUG_VERBOSE("Попытка получения пакета");
+	//Serial.println("Попытка получения пакета");
 	if(buffer == nullptr)
 	return receiveInfo{0, IPAddress(0,0,0,0)};
 	size_t packetSize = max(Udp.parsePacket(), 0);
 	if ((packetSize < 1) || packetSize < magicStringLength)
 	{
+	  Serial.println("Некоректный размер пакета или его отсутствие");
 	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
 	  return receiveInfo{0, IPAddress(0,0,0,0)};
 	}
@@ -179,7 +184,7 @@
 	return receiveInfo{(size_t)(packetSize - magicStringLength), Udp.remoteIP()};
   }
 
-  
+  //#pragma GCC pop_options
 
   IPAddress DataTransmitter::getTargetIP()
   {

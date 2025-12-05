@@ -104,6 +104,7 @@ public:
 	void clear()
 	{
 		Size = 0;
+		readPtr = 0;
 	}
 
 	size_t getReadPtr() const
@@ -127,7 +128,7 @@ public:
 		if(readPtr + sizeof(T) > Size)
 		{
 			memset(&data, 0, sizeof(T));
-			DEBUG_WARNING("can't read data is too big");
+			DEBUG_WARNING("can't read data is too big, size:%d should be:%d", sizeof(T), Size - readPtr);
 			return data;
 		}
 		memcpy(&data, array + readPtr, sizeof(T));

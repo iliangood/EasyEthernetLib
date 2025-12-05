@@ -2,7 +2,7 @@
 #define UTILS_H
 
 #include <Arduino.h>
-#include <Arduino_DebugUtils.h>
+//#include <Arduino_DebugUtils.h>
 
 #if !defined DEBUG_ERROR
 #define DEBUG_ERROR(...)      ((void)0)
