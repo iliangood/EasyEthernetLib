@@ -125,7 +125,7 @@
 	size_t packetSize = max(Udp.parsePacket(), 0);
 	if ((packetSize < 1) || packetSize < magicStringLength)
 	{
-	  Serial.println("Некоректный размер пакета или его отсутствие");
+	  //Serial.println("Некоректный размер пакета или его отсутствие");
 	  DEBUG_DEBUG("Некоректный размер пакета или его отсутствие");
 	  return receiveInfo{0, IPAddress(0,0,0,0)};
 	}
